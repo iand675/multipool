@@ -1,10 +1,10 @@
-name:                multipool
+name:                multipool-persistent
 version:             0.1.0.0
-github:              "iand675/multipool"
+github:              "iand675/multipool-persistent"
 license:             BSD3
 author:              "Ian Duncan"
 maintainer:          "ian@iankduncan.com"
-copyright:           "2018 Ian Duncan"
+copyright:           "Ian Duncan"
 
 extra-source-files:
 - README.md
@@ -17,29 +17,21 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/multipool#readme>
+description:         Please see the README on GitHub at <https://github.com/iand675/multipool-persistent#readme>
 
 dependencies:
 - base >= 4.7 && < 5
 - mtl
-- resource-pool
+- multipool
 - persistent
-- text
-- hashable
-- unliftio-core
 - unordered-containers
-# Todo move these out
-- bytestring
-- persistent-postgresql
-- monad-logger
-- hedis
-- mmorph
+- unliftio-core
 
 library:
   source-dirs: src
 
 tests:
-  multipool-test:
+  multipool-persistent-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -47,4 +39,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - multipool
+    - multipool-persistent

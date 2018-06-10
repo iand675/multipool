@@ -34,7 +34,17 @@ resolver: lts-11.12
 #  - auto-update
 #  - wai
 packages:
-- .
+- multipool
+- multipool-persistent
+- multipool-persistent-postgresql
+- location:
+    git: https://github.com/iand675/postgresql-common.git
+    commit: 01f8fdd29ff1af513cd5f979f56439dc810d49fe
+  subdirs:
+    - postgresql-common
+    - postgresql-common-persistent
+  extra-dep: true
+
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)

@@ -39,7 +39,7 @@ packages:
 - multipool-persistent-postgresql
 - location:
     git: https://github.com/iand675/postgresql-common.git
-    commit: 01f8fdd29ff1af513cd5f979f56439dc810d49fe
+    commit: 0ce003cb6e76ed9d37078ae4a84210121c912468
   subdirs:
     - postgresql-common
     - postgresql-common-persistent

@@ -3,6 +3,7 @@
 module Data.MultiPool.Persist.Postgresql
     ( initMultiPool
     , initMultiPool'
+    , runReadCurrent
     , getLastLSN
     , gatherLSNs
     ) where
@@ -28,10 +29,10 @@ initMultiPool mc mn rl = do
 
 initMultiPool' ::
      (MonadLogger m, MonadUnliftIO m)
-  => (MultiPool SqlBackend -> IO (Maybe (InstanceName SqlReadBackend)))
-  -> ConnectionString
-  -> Int
-  -> [(InstanceName SqlReadBackend, ConnectionString, Int)]
+  => (MultiPool SqlBackend -> IO (Maybe (InstanceName SqlReadBackend))) -- Strategy for selectin the replica instance when calling 'runReadAny'. 'roundRobin' is the current default.
+  -> ConnectionString -- ^ Master connection string
+  -> Int -- ^ Max number of connections to master instance
+  -> [(InstanceName SqlReadBackend, ConnectionString, Int)] -- ^ Replica connection details
   -> m (MultiPool SqlBackend)
 initMultiPool' multiPoolAnyReplicaSelector str n is = do
   multiPoolMaster <- createPostgresqlPool str n
@@ -39,6 +40,28 @@ initMultiPool' multiPoolAnyReplicaSelector str n is = do
   let multiPoolReplica = HM.fromList replicas
       multiPoolAnyMasterSelector = const $ pure ()
   return $ MultiPool {..}
+
+-- | Performs a read on the first replica found that sufficiently up-to-date with the given LSN. This function can be combined with 'gatherLSNs' and some sort of caching mechanism to provide a simple way to scale out reads. An great article on this concept can be found [here](https://brandur.org/postgres-reads)
+--
+-- If no replica is up-to-date with the given LSN, the master instance will be used to run the query.
+runReadCurrent ::
+     MonadUnliftIO m
+  => MultiPool SqlBackend
+  -> HashMap (InstanceName SqlReadBackend) LSN
+  -> LSN
+  -> ReaderT SqlReadBackend m a
+  -> m a
+runReadCurrent b lsnMap lsn m =
+  case validLsnPools of
+    [] -> runReadAnyMaster b m
+    (pool:_) -> runSqlPool m $ snd pool
+  where
+    validLsnPools =
+      HM.toList $
+      HM.intersectionWith
+        (\pool _ -> pool)
+        (multiPoolReplica b)
+        (HM.filter (>= lsn) lsnMap)
 
 -- TODO 9.6 support?
 getLastLSN :: MonadIO m => ReaderT SqlReadBackend m LSN

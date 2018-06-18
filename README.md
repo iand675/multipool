@@ -32,7 +32,7 @@ doSomeQueries = do
   mp <- runNoLoggingT $ initMultiPool connStr 1 [(mkInstanceName "replica", connStr, 1)]
 
   user <- runWriteAny mp $ do
-    migrate
+    migrateAll
     k <- insert $ User "bob" Nothing
     getJust k
 

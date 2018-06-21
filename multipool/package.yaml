@@ -1,5 +1,5 @@
 name:                multipool
-version:             0.1.0.0
+version:             0.1.0.1
 github:              "iand675/multipool"
 license:             BSD3
 author:              "Ian Duncan"
@@ -12,7 +12,7 @@ extra-source-files:
 
 # Metadata used when publishing your package
 synopsis:            Generalized system for reading and writing to distributed systems that have primary/replica topologies.
-# category:            Web
+category:            Database
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
@@ -27,13 +27,8 @@ dependencies:
 - text
 - hashable
 - unordered-containers
-# Todo move these out
-- postgresql-common-persistent
 - bytestring
-- persistent-postgresql
 - monad-logger
-- hedis
-- mmorph
 
 library:
   source-dirs: src

@@ -24,8 +24,6 @@ import Data.Typeable
 import Data.IORef
 -- Todo: separate out implementations
 import Data.ByteString (ByteString)
-import Database.Persist.Postgresql
-import Database.Persist.Postgresql.Common
 
 newtype InstanceName backend = InstanceName
   { rawInstanceName :: Hashed Text

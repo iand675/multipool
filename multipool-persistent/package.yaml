@@ -1,5 +1,5 @@
 name:                multipool-persistent
-version:             0.1.0.0
+version:             0.1.0.1
 github:              "iand675/multipool-persistent"
 license:             BSD3
 author:              "Ian Duncan"
@@ -12,7 +12,7 @@ extra-source-files:
 
 # Metadata used when publishing your package
 synopsis:            Read and write from appropriate persistent sql instances in replicated environments.
-# category:            Web
+category:            Database
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is

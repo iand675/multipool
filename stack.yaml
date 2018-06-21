@@ -37,18 +37,13 @@ packages:
 - multipool
 - multipool-persistent
 - multipool-persistent-postgresql
-- location:
-    git: https://github.com/iand675/postgresql-common.git
-    commit: 0ce003cb6e76ed9d37078ae4a84210121c912468
-  subdirs:
-    - postgresql-common
-    - postgresql-common-persistent
-  extra-dep: true
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
-# extra-deps: []
+extra-deps:
+- postgresql-common-0.1.0.1
+- postgresql-common-persistent-0.1.0.0
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

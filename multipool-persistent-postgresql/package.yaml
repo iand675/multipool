@@ -1,5 +1,5 @@
 name:                multipool-persistent-postgresql
-version:             0.1.0.1
+version:             0.1.1.0
 github:              "iand675/multipool-persistent-postgresql"
 license:             BSD3
 author:              "Ian Duncan"
@@ -27,8 +27,9 @@ dependencies:
 - postgresql-common-persistent
 - unliftio-core
 - monad-logger
-- persistent
-- persistent-postgresql
+- persistent >= 2.9.0
+- persistent-postgresql >= 2.9.0
+- persistent-qq >= 2.9.0
 - unordered-containers
 
 library:

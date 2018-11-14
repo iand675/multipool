@@ -16,6 +16,8 @@ import Data.MultiPool
 import Data.MultiPool.Persist.Sql
 import Database.Persist.Postgresql
 import Database.Persist.Postgresql.Common
+import Database.Persist.Sql.Raw.QQ
+
 
 initMultiPool ::
      (MonadLogger m, MonadUnliftIO m)

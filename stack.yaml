@@ -18,7 +18,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-11.12
+resolver: lts-12.18
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -44,7 +44,9 @@ packages:
 extra-deps:
 - postgresql-common-0.1.0.1
 - postgresql-common-persistent-0.1.0.0
-
+- persistent-2.9.0
+- persistent-postgresql-2.9.0
+- persistent-qq-2.9.0
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

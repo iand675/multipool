@@ -1,6 +1,6 @@
-name:                multipool-persistent-postgresql
-version:             0.1.1.0
-github:              "iand675/multipool-persistent-postgresql"
+name:                multipool-postgresql-simple
+version:             0.1.0.2
+github:              "iand675/multipool"
 license:             BSD3
 author:              "Ian Duncan"
 maintainer:          "ian@iankduncan.com"
@@ -11,32 +11,29 @@ extra-source-files:
 - ChangeLog.md
 
 # Metadata used when publishing your package
-synopsis:            Read and write appropriately from both master and replicated postgresql instances.
-category:            Database
+# synopsis:            Short description of your package
+# category:            Web
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/iand675/multipool#readme>
+description:         Please see the README on GitHub at <https://github.com/iand675/multipool-postgresql-simple#readme>
 
 dependencies:
 - base >= 4.7 && < 5
+- bytestring
+- postgresql-simple
+- resource-pool
 - mtl
 - multipool
-- multipool-persistent
-- postgresql-common-persistent
 - unliftio-core
-- monad-logger
-- persistent >= 2.9.0
-- persistent-postgresql >= 2.9.0
-- persistent-qq
 - unordered-containers
 
 library:
   source-dirs: src
 
 tests:
-  multipool-persistent-postgresql-test:
+  multipool-postgresql-simple-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -44,4 +41,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - multipool-persistent-postgresql
+    - multipool-postgresql-simple

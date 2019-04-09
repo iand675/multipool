@@ -74,7 +74,7 @@ data MultiPool backend = MultiPool
   }
 
 forReplicas :: (MultiPoolBackend m backend, Replicas backend ~ HashMap k v) => MultiPool backend -> (k -> v -> m a) -> m [a]
-forReplicas pool f = forM (HM.toList (multiPoolReplica pool)) $ \(k, v) -> f k v
+forReplicas pool f = forM (HM.toList $ multiPoolReplica pool) $ \(k, v) -> f k v
 
 roundRobin :: MonadIO m => [choice] -> m (a -> IO (Maybe choice))
 roundRobin [] = return $ const $ return Nothing

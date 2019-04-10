@@ -1,5 +1,5 @@
 name:                multipool-persistent
-version:             0.1.0.1
+version:             0.2.0.0
 github:              "iand675/multipool-persistent"
 license:             BSD3
 author:              "Ian Duncan"
@@ -26,6 +26,7 @@ dependencies:
 - persistent
 - unordered-containers
 - unliftio-core
+- resource-pool
 
 library:
   source-dirs: src

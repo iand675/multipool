@@ -43,33 +43,43 @@ data InstanceDoesNotExist backend = InstanceDoesNotExist
 instance (Show (InstanceDoesNotExist backend), Typeable backend) => Exception (InstanceDoesNotExist backend)
 
 class Monad m => MultiPoolBackend m backend where
-  type Masters backend :: *
-  type Masters backend = Pool (MasterConnection backend)
+  type Primaries backend :: *
+  type Primaries backend = Pool (PrimaryConnection backend)
   type Replicas backend :: *
   type Replicas backend = HashMap (ReplicaIdentifier backend) (Pool (ReplicaConnection backend))
 
-  type MasterConnection backend :: *
+  type LocalPrimary backend :: *
+  type LocalPrimary backend = LocalPool (PrimaryConnection backend)
+  type LocalReplica backend :: *
+  type LocalReplica backend = LocalPool (ReplicaConnection backend)
+
+  type PrimaryConnection backend :: *
   type ReplicaConnection backend :: *
 
-  type MasterIdentifier backend :: *
-  type MasterIdentifier backend = ()
+  type PrimaryIdentifier backend :: *
+  type PrimaryIdentifier backend = ()
   type ReplicaIdentifier backend :: *
   type ReplicaIdentifier backend = InstanceName backend
 
-  runWriteAny :: MultiPool backend -> ReaderT (MasterConnection backend) m a -> m a
-  runWrite :: MultiPool backend -> MasterIdentifier backend -> ReaderT (MasterConnection backend) m a -> m a
+  runWriteAny :: MultiPool backend -> ReaderT (PrimaryConnection backend) m a -> m a
+  runWrite :: MultiPool backend -> PrimaryIdentifier backend -> ReaderT (PrimaryConnection backend) m a -> m a
 
-  runReadMaster :: MultiPool backend -> MasterIdentifier backend -> ReaderT (ReplicaConnection backend) m a -> m a
-  runReadAnyMaster :: MultiPool backend -> ReaderT (ReplicaConnection backend) m a -> m a
+  runReadPrimary :: MultiPool backend -> PrimaryIdentifier backend -> ReaderT (ReplicaConnection backend) m a -> m a
+  runReadAnyPrimary :: MultiPool backend -> ReaderT (ReplicaConnection backend) m a -> m a
   runReadAny :: MultiPool backend -> ReaderT (ReplicaConnection backend) m a -> m a
   runRead :: MultiPool backend -> ReplicaIdentifier backend -> ReaderT (ReplicaConnection backend) m a -> m a
 
+  takePrimary :: MultiPool backend -> PrimaryIdentifier backend -> m (PrimaryConnection backend, LocalPrimary backend)
+  putPrimary :: MultiPool backend -> LocalPrimary backend -> PrimaryConnection backend -> m ()
+
+  takeReplica :: MultiPool backend -> ReplicaIdentifier backend -> m (ReplicaConnection backend, LocalReplica backend)
+  putReplica :: MultiPool backend -> LocalReplica backend -> ReplicaConnection backend -> m ()
 
 -- Invariant: MultiPool should not be modified after creation?
 data MultiPool backend = MultiPool
-  { multiPoolMaster :: !(Masters backend)
+  { multiPoolPrimary :: !(Primaries backend)
   , multiPoolReplica :: !(Replicas backend)
-  , multiPoolAnyMasterSelector :: MultiPool backend -> IO (MasterIdentifier backend)
+  , multiPoolAnyPrimarySelector :: MultiPool backend -> IO (PrimaryIdentifier backend)
   , multiPoolAnyReplicaSelector :: MultiPool backend -> IO (Maybe (ReplicaIdentifier backend))
   }
 

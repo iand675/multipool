@@ -32,20 +32,20 @@ initMultiPool mc mn rl = do
 initMultiPool' ::
      (MonadLogger m, MonadUnliftIO m)
   => (MultiPool SqlBackend -> IO (Maybe (InstanceName SqlReadBackend))) -- Strategy for selectin the replica instance when calling 'runReadAny'. 'roundRobin' is the current default.
-  -> ConnectionString -- ^ Master connection string
-  -> Int -- ^ Max number of connections to master instance
+  -> ConnectionString -- ^ Primary connection string
+  -> Int -- ^ Max number of connections to primary instance
   -> [(InstanceName SqlReadBackend, ConnectionString, Int)] -- ^ Replica connection details
   -> m (MultiPool SqlBackend)
 initMultiPool' multiPoolAnyReplicaSelector str n is = do
-  multiPoolMaster <- createPostgresqlPool str n
+  multiPoolPrimary <- createPostgresqlPool str n
   replicas <- mapM (\(inst, connStr, numConns) -> (,) <$> pure inst <*> createPostgresqlPool connStr numConns) is
   let multiPoolReplica = HM.fromList replicas
-      multiPoolAnyMasterSelector = const $ pure ()
+      multiPoolAnyPrimarySelector = const $ pure ()
   return $ MultiPool {..}
 
 -- | Performs a read on the first replica found that sufficiently up-to-date with the given LSN. This function can be combined with 'gatherLSNs' and some sort of caching mechanism to provide a simple way to scale out reads. An great article on this concept can be found [here](https://brandur.org/postgres-reads)
 --
--- If no replica is up-to-date with the given LSN, the master instance will be used to run the query.
+-- If no replica is up-to-date with the given LSN, the primary instance will be used to run the query.
 runReadCurrent ::
      MonadUnliftIO m
   => MultiPool SqlBackend
@@ -55,7 +55,7 @@ runReadCurrent ::
   -> m a
 runReadCurrent b lsnMap lsn m =
   case validLsnPools of
-    [] -> runReadAnyMaster b m
+    [] -> runReadAnyPrimary b m
     (pool:_) -> runSqlPool m $ snd pool
   where
     validLsnPools =
